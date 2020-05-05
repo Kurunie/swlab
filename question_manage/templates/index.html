@@ -7,6 +7,9 @@
     <!-- 必须在引入bootstarp.js之前引入 -->
     <script src="../static/jquery-3.5.0.min.js"></script>
 
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
     <script src="../static/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
 
     <script src="../static/js/jquery-1.11.3.min.js"></script>
@@ -19,9 +22,23 @@
 
 </head>
 <body>
-    <div id="header">
-        <h1>题目列表</h1>
+    <div class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">题目列表</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">用户管理</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="./admin">后台管理</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">搜素</a>
+        </li>
+      </ul>
     </div>
+
     <div id="content">
         {% for q in qlist %}
             <div class="inner">

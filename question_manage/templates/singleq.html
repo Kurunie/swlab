@@ -6,6 +6,7 @@
     <link href="/static/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 必须在引入bootstarp.js之前引入 -->
     <script src="/static/jquery-3.5.0.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
 
     <script src="/static/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
 
@@ -19,9 +20,25 @@
 
 </head>
 <body>
-    <div id="header">
-        <h1>T{{ q.id }}</h1>
+    <div class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'qlist' %}">题目列表</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">用户管理</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="./admin">后台管理</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">搜素</a>
+        </li>
+      </ul>
     </div>
+    <br />
+    <h1>T{{ q.id }}</h1>
+
     <div id="content">
         <div class="inner">
             <h2>{{ q.title }}</h2>
@@ -61,7 +78,7 @@
                     </li>
                 </ul>
             </div>
-                <div class="submit_bottom" id="s1"><button type="submit" class="btn btn-primary btn-sm">Submit</button></div>
+                <div class="submit_bottom" id="s1"><button type="submit" class="btn btn-primary">Submit</button></div>
             </div>
         </div>
     </div>
@@ -69,7 +86,7 @@
     <div id="content">
         <div class="inner" style="display:none">
             <p id="result"></p>
-            <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary btn-sm">查看答案</button></div>
+            <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary">查看答案</button></div>
             <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p></div>
         </div>
     </div>

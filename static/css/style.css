@@ -29,6 +29,11 @@ div{
 #content .inner{
     background: #fff;
     padding: 20px;
-    margin: 40px;
+    margin: 40px 5%;
     box-shadow: 1px 2px 3px #ddd;
+}
+
+.container {
+    margin-left: 5%;
+    margin-right: 5%;
 }

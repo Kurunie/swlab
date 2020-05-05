@@ -19,6 +19,6 @@ from question_manage import views as q_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'', q_views.index),
+    path(r'', q_views.index, name="qlist"),
     path('q/<int:id>/', q_views.singleq, name='q'),
 ]
