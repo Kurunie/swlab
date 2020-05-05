@@ -1,53 +1,15 @@
-<!DOCTYPE html>
-<head>
-    <meta charset="utf-8">
-    <title>题目列表</title>
-
-    <link href="../static/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 必须在引入bootstarp.js之前引入 -->
-    <script src="../static/jquery-3.5.0.min.js"></script>
-
-    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
-    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-
-    <script src="../static/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
-
-    <script src="../static/js/jquery-1.11.3.min.js"></script>
-    <script src="../static/js/jquery.countdown.js"></script>
-    <!--时间js-->
-    <link href="../static/css/main.css" rel="stylesheet" type="text/css" />
-
-    <link href="../static/css/test.css" rel="stylesheet" type="text/css" />
-    <link href="../static/css/style.css" rel="stylesheet" type="text/css"/>
-
-</head>
-<body>
-    <div class="container">
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link active" href="#">题目列表</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">用户管理</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="./admin">后台管理</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">搜素</a>
-        </li>
-      </ul>
-    </div>
-
+{% extends 'base.html' %}
+{% block content %}
     <div id="content">
         {% for q in qlist %}
             <div class="inner">
                 <h2><a href="{% url 'q' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
                 <div class="main">
+                    <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
                 </div>
             </div>
         {% endfor %}
     </div>
-</body>
+{% endblock %}
 
 

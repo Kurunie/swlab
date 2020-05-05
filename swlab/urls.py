@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'', q_views.index, name="qlist"),
     path('q/<int:id>/', q_views.singleq, name='q'),
+    path('search/', q_views.search, name='search'),
 ]

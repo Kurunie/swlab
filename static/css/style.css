@@ -37,3 +37,7 @@ div{
     margin-left: 5%;
     margin-right: 5%;
 }
+
+p#ex-msg {
+    margin-bottom: 0px !important;
+}

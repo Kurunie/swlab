@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+    搜索结果
+{% endblock %}
+{% block content %}
+    {% if error_msg %}
+        <p>{{ error_msg }}</p>
+    {% endif %}
+    <div id="content">
+        {% for q in qlist %}
+             <div class="inner">
+                 <h2><a href="{% url 'q' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
+             </div>
+            {% empty %}
+              <div class="no-post">
+                没有搜索到符合条件的题目
+              </div>
+        {% endfor %}
+    </div>
+{% endblock %}

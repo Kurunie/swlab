@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}题目列表{% endblock %}</title>
+
+    <link href="/static/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 必须在引入bootstarp.js之前引入 -->
+    <script src="/static/jquery-3.5.0.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <script src="/static/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+
+    <script src="/static/js/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/jquery.countdown.js"></script>
+    <!--时间js-->
+    <link href="/static/css/main.css" rel="stylesheet" type="text/css" />
+
+    <link href="/static/css/test.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+    <div class="container">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'qlist' %}">题目列表</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">用户管理</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="./admin">后台管理</a>
+          </div>
+        </li>
+          <li class="nav-item">
+              <form method="get" action="/search/">
+                  {% csrf_token %}
+                  <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">题目</span>
+                      </div>
+                      <input type="text" class="form-control" placeholder="请输入关键字" name="ss">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">标签</span>
+                      </div>
+                      <select class="form-control" id="sel1" name = "sc">
+                        <option>ALL</option>
+                          {% for t in tlist %}
+                            <option>{{ t.category }}</option>
+                          {% endfor %}
+                      </select>
+                      <button type="submit" class="btn btn-outline-info">搜索</button>
+                  </div>
+              </form>
+          </li>
+      </ul>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+</body>
+<script>
+    {% block script %}
+    {% endblock %}
+</script>
+
+
