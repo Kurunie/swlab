@@ -15,7 +15,7 @@
     <link href="../static/css/main.css" rel="stylesheet" type="text/css" />
 
     <link href="../static/css/test.css" rel="stylesheet" type="text/css" />
-    <link href="./static/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="../static/css/style.css" rel="stylesheet" type="text/css"/>
 
 </head>
 <body>
@@ -25,43 +25,8 @@
     <div id="content">
         {% for q in qlist %}
             <div class="inner">
-                <h2>{{ q.title }}</h2>
+                <h2><a href="{% url 'q' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
                 <div class="main">
-                <div class="test_content_nr_main">
-                    <ul>
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="A"/>
-                                <label>A.
-                                    <p class="ue" style="display: inline;">{{ q.optionA }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="B"/>
-                                <label>
-                                    B.<p class="ue" style="display: inline;">{{ q.optionB }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="C"/>
-                                <label>
-                                    C.<p class="ue" style="display: inline;">{{ q.optionC }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="D"/>
-                                <label>
-                                    D.<p class="ue" style="display: inline;">{{ q.optionD }}</p>
-                                </label>
-                            </li>
-                    </ul>
-                </div>
                 </div>
             </div>
         {% endfor %}

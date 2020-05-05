@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>题目列表</title>
+
+    <link href="../static/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 必须在引入bootstarp.js之前引入 -->
+    <script src="/static/jquery-3.3.1.min.js"></script>
+
+    <script src="/static/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+
+    <script src="/static/js/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/jquery.countdown.js"></script>
+    <!--时间js-->
+    <link href="/static/css/main.css" rel="stylesheet" type="text/css" />
+
+    <link href="/static/css/test.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+    <div id="header">
+        <h1>T{{ q.id }}</h1>
+    </div>
+    <div id="content">
+        <div class="inner">
+            <h2>{{ q.title }}</h2>
+            <div class="main">
+            <div class="test_content_nr_main">
+                <ul>
+                    <li class="option">
+                            <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                            value="A"/>
+                        <label>A.
+                            <p class="ue" style="display: inline;">{{ q.optionA }}</p>
+                        </label>
+                    </li>
+
+                    <li class="option">
+                            <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                            value="B"/>
+                        <label>
+                            B.<p class="ue" style="display: inline;">{{ q.optionB }}</p>
+                        </label>
+                    </li>
+
+                    <li class="option">
+                            <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                            value="C"/>
+                        <label>
+                            C.<p class="ue" style="display: inline;">{{ q.optionC }}</p>
+                        </label>
+                    </li>
+
+                    <li class="option">
+                            <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                            value="D"/>
+                        <label>
+                            D.<p class="ue" style="display: inline;">{{ q.optionD }}</p>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+                <div class="submit_bottom"><button type="submit">Submit</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="inner" style="display:none">QAQ</div>
+    </div>
+</body>
+
+

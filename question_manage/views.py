@@ -10,3 +10,7 @@ from .models import Question
 def index(request):
     ques = Question.objects.all()
     return render_to_response("index.html", {'qlist': ques})
+
+def singleq(request, id):
+    q = Question.objects.get(id=id)
+    return render_to_response("singleq.html", {'q': q})
