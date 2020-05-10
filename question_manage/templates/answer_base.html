@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>在线答题考试系统</title>
+
+
+    <link href="/static/bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 必须在引入bootstarp.js之前引入 -->
+    <script src="/static/jquery-3.5.0.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <script src="/static/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+
+    <script src="/static/js/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/jquery.countdown.js"></script>
+    <!--时间js-->
+    <link href="/static/css/main.css" rel="stylesheet" type="text/css" />
+
+    <link href="/static/css/test.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css"/>
+<style>
+    .hasBeenAnswer {
+        background: #5d9cec;
+        color:#fff;
+    }
+    body{
+        background: #fff !important;
+    }
+</style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-light navbar-light ">
+    <ul class="navbar-nav">
+        <li class="nav-item active">
+            <a class="nav-link"><h3>标题:{{ paper.title }}</h3></a>
+        </li>
+        <li style="position: fixed;right: 70px; font-size: 30px;color: #9fcdff">{{ student.name }}</li>
+
+    </ul>
+</nav>
+<div class="main">
+	<!--nr start-->
+	<div class="test_main">
+		<div class="nr_left">
+			<div class="test">
+
+                <input type="hidden" name="sid" value="{{ student.id }}">
+                <input type="hidden" name="subject" value="{{ subject }}">
+                <input type="hidden" name="pid" value="{{ paper.id }}">
+					<div class="test_title">
+                        <a href="/user/">
+						<font><input type="button" name="back" value="返回"></font></a>
+					</div>
+
+						<div class="test_content">
+							<div class="test_content_title">
+								<h2>单选题</h2>
+
+							</div>
+						</div>
+						<div class="test_content_nr">
+							<ul>
+                               {% for a in alist %}
+                                   <li id="{{ forloop.counter }}">
+                                    <div class="test_content_nr_tt">
+                                        <i>{{ forloop.counter}}</i><span>({{ a.qid.score }}分)</span>
+                                        <font>{{ a.qid.title }}</font>
+
+                                    </div>
+                                   <div class="test_content_nr_main">
+                                        <ul>
+                                                <li class="option">
+                                                    <label>A.
+                                                        <p class="ue" style="display: inline;">{{ a.qid.optionA }}</p>
+                                                    </label>
+                                                </li>
+
+                                                <li class="option">
+                                                    <label>
+                                                        B.<p class="ue" style="display: inline;">{{ a.qid.optionB }}</p>
+                                                    </label>
+                                                </li>
+
+                                                <li class="option">
+                                                    <label>
+                                                        C.<p class="ue" style="display: inline;">{{ a.qid.optionC }}</p>
+                                                    </label>
+                                                </li>
+
+                                                <li class="option">
+                                                    <label>
+                                                        D.<p class="ue" style="display: inline;">{{ a.qid.optionD }}</p>
+                                                    </label>
+                                                </li>
+                                        </ul>
+                                    </div>
+                                    </li>
+
+                                    <li>
+                                        <p>提交答案：{{ a.ans }} 正确答案:{{ a.qid.answer }}</p>
+                                    </li>
+                               {% endfor %}
+							</ul>
+						</div>
+            <div class="test_content_nr_main">
+                <p>教师评语： {{ grade.rewind }}</p>
+			</div>
+		</div>
+	</div>
+	<!--nr end-->
+	<div class="foot"></div>
+</div>
+
+
+
+</body>
+</html>

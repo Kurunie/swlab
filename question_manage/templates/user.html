@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+
+  <br>
+  <!-- Nav pills -->
+  <ul class="nav nav-pills" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="pill" href="#home">个人信息</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="pill" href="#menu1">考试信息</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="pill" href="#menu2">成绩查询</a>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div id="home" class="container tab-pane active"><br>
+      <h3>个人信息</h3>
+
+        <table class="table">
+    <thead>
+      <tr>
+        <th>属性</th>
+        <th>信息</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>学号</td>
+        <td>{{ user.id }}</td>
+
+      </tr>
+      <tr class="table-primary">
+        <td>姓名</td>
+        <td>{{ user.name }}</td>
+
+      </tr>
+      <tr class="table-danger">
+        <td>学院</td>
+        <td>{{ user.dept }}</td>
+
+      </tr>
+
+       <tr class="table-success">
+        <td>专业</td>
+        <td>{{ user.major }}</td>
+
+      </tr>
+
+
+      </tr>
+
+    </tbody>
+  </table>
+    </div>
+
+    <div id="menu1" class="container tab-pane fade"><br>
+      <h3>考试信息</h3>
+      <p></p>
+        <table class="table">
+    <thead>
+      <tr>
+          <th>学号</th>
+        <th>姓名</th>
+        <th>考试名称</th>
+          <th>考试时间</th>
+          <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    {#   遍历字典  paper #}
+    {% for p in plist %}
+
+     <tr class="table-info">
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ p.title }}</td>
+          <td>{{ p.examtime }}</td>
+          <td>
+              <a href="{% url 'exam' user.id p.id %}">
+              <button class="btn btn-primary" id="toExam+{{ p.id }}">开始考试</button>
+             </a>
+          </td>
+      </tr>
+    {% endfor %}
+
+
+
+    </tbody>
+  </table>
+    </div>
+
+    <div id="menu2" class="container tab-pane fade"><br>
+      <h3>考试成绩</h3>
+      <p></p>
+        <table class="table">
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>科目</th>
+            <th>成绩</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+    <tbody>
+
+    {% for g in glist %}
+        <tr class="table-primary">
+        <td>{{ user.name }}</td>
+        <td>{{ g.pid.title }}</td>
+        <td>{{ g.grade }}</td>
+        <td>
+              <a href="{% url 'answer' g.id  %}">
+              <button class="btn btn-primary" id="answer+{{ g.id }}">查看答卷</button>
+             </a>
+
+            <a href="{% url 'rewind' g.id  %}">
+              <button class="btn btn-primary" id="rewind+{{ g.id }}">审阅答卷</button>
+             </a>
+        </td>
+      </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+    <a href="/user/export/">
+        <button class="btn btn-primary" id="export">导出成绩</button>
+    </a>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+    $(document).ready(function(e) {
+        $("#m1").removeClass("nav-link active");
+        $("#m1").addClass("nav-link");
+        $("#m2").removeClass("nav-link");
+        $("#m2").addClass("nav-link active");
+    });
+{% endblock %}
