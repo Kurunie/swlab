@@ -55,7 +55,7 @@ def mylogin(request):
 
 def mylogout(request):
     logout(request)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '../'))
+    return index(request)
 
 
 @login_required
