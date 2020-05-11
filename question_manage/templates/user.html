@@ -53,6 +53,10 @@
       </tr>
 
 
+      <tr class="table-info">
+        <td>身份</td>
+        <td>{{ user.type }}</td>
+
       </tr>
 
     </tbody>
@@ -111,7 +115,7 @@
 
     {% for g in glist %}
         <tr class="table-primary">
-        <td>{{ user.name }}</td>
+        <td>{{ g.sid.name }}</td>
         <td>{{ g.pid.title }}</td>
         <td>{{ g.grade }}</td>
         <td>
@@ -119,7 +123,7 @@
               <button class="btn btn-primary" id="answer+{{ g.id }}">查看答卷</button>
              </a>
 
-            <a href="{% url 'rewind' g.id  %}">
+            <a href="{% url 'rewind' g.id  %}" style="display: none" class="rewind_botton">
               <button class="btn btn-primary" id="rewind+{{ g.id }}">审阅答卷</button>
              </a>
         </td>
@@ -141,9 +145,9 @@
 
 {% block script %}
     $(document).ready(function(e) {
-        $("#m1").removeClass("nav-link active");
-        $("#m1").addClass("nav-link");
-        $("#m2").removeClass("nav-link");
-        $("#m2").addClass("nav-link active");
-    });
+        if("{{ user.type }}"=="老师")
+        {
+             $(".rewind_botton").show().addClass("show");
+        }
+     　});
 {% endblock %}

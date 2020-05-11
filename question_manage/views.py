@@ -61,9 +61,12 @@ def mylogout(request):
 @login_required
 def userpage(request):
     taglist = Question.objects.values("category").distinct()
-    plist = Paper.objects.all()
     user = UserEx.objects.get(user=request.user)
-    glist = Grade.objects.filter(sid=user)
+    plist = Paper.objects.all()
+    if user.type == "老师":
+        glist = Grade.objects.all()
+    else:
+        glist = Grade.objects.filter(sid=user)
     return render(request,'user.html', {'tlist': taglist, 'user':user, 'plist':plist, 'glist':glist})
 
 def exam(request, sid, pid):
