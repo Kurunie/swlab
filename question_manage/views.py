@@ -1,10 +1,10 @@
 
 from django.shortcuts import render,redirect, render_to_response
 from question_manage import models as q_models
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Question,UserEx,Paper,Grade, TAnswer
+from .models import *
 from django.contrib.auth.decorators import login_required
 
 import xlwt
@@ -22,7 +22,89 @@ def index(request):
 def singleq(request, id):
     taglist = Question.objects.values("category").distinct()
     q = Question.objects.get(id=id)
-    return render_to_response("singleq.html", {'q': q, 'tlist': taglist})
+    s_dlist = Discussion.objects.filter(qid=q, solved=True)
+    un_dlist = Discussion.objects.filter(qid=q, solved=False)
+    return render_to_response("singleq.html", {'q': q, 'tlist': taglist, 's_dlist': s_dlist, 'un_dlist': un_dlist})
+
+def discussion(request, id, did):
+    taglist = Question.objects.values("category").distinct()
+    q = Question.objects.get(id=id)
+    d = Discussion.objects.get(id=did)
+    rlist = Reply.objects.filter(did=d)
+    user = request.user
+    is_auth = '0'
+    if user.is_authenticated:
+        if user.username == d.uid.user.username:
+            is_auth = '1'
+    return render(request, "discussion.html", {'q': q, 'tlist': taglist, 'd': d, 'rlist': rlist, 'is_auth': is_auth})
+
+def change_s(request):
+    if request.is_ajax():
+        status = request.POST.get('status')
+        data = {}
+        did = request.POST.get('did')
+        d = Discussion.objects.get(id=did)
+        user = request.user
+        # return HttpResponse(status)
+        if user.is_authenticated:
+            if status == '1':
+                d.solved = 1
+            else:
+                d.solved = 0
+            d.save()
+            data['status'] = 'success'
+            data['data'] = {'solved': status}
+        return JsonResponse(data)
+
+@login_required
+def my_dis(request, id):
+    taglist = Question.objects.values("category").distinct()
+    q = Question.objects.get(id=id)
+    user = request.user
+    if user.is_authenticated:
+        exu = UserEx.objects.get(user=user)
+        s_dlist = Discussion.objects.filter(qid=q, uid=exu, solved=True)
+        un_dlist = Discussion.objects.filter(qid=q, uid=exu, solved=False)
+        return render(request, "my_dis.html", {'q': q, 'tlist': taglist, 's_dlist': s_dlist, 'un_dlist': un_dlist, 'user':exu})
+
+def add_dis(request):
+    if request.is_ajax():
+        title = request.POST.get('title')
+        detail = request.POST.get('detail')
+        data = {}
+        qid = request.POST.get('qid')
+        q = Question.objects.get(id=qid)
+        user = request.user
+        if user.is_authenticated:
+            exu = UserEx.objects.get(user=user)
+            Discussion.objects.create(qid=q, uid=exu, title=title, detail=detail)
+            data['status'] = 'success'
+            data['message'] = '发布成功'
+            data['data'] = {'title': title, 'detail': detail}
+        else:
+            data['status'] = 'fail'
+            data['message'] = '未登录，请登录后再发布'
+            data['data'] = {'title': title, 'detail': detail}
+        return JsonResponse(data)
+
+def add_rep(request):
+    if request.is_ajax():
+        content = request.POST.get('content')
+        data = {}
+        did = request.POST.get('did')
+        d = Discussion.objects.get(id=did)
+        user = request.user
+        if user.is_authenticated:
+            exu = UserEx.objects.get(user=user)
+            Reply.objects.create(did=d, uid=exu, content=content)
+            data['status'] = 'success'
+            data['message'] = '回复成功'
+            data['data'] = {'content': content}
+        else:
+            data['status'] = 'fail'
+            data['message'] = '未登录，请登录后重试'
+            data['data'] = {'content': content}
+        return JsonResponse(data)
 
 def search(request):
     taglist = Question.objects.values("category").distinct()

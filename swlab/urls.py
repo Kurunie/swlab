@@ -31,4 +31,9 @@ urlpatterns = [
     path("rewind/<int:id>/", q_views.rewind, name="rewind"),
     path("sub_rewind/", q_views.sub_rewind, name="sr"),
     path("user/export/", q_views.export_excel, name="export"),
+    path("d/<int:id>/<int:did>/", q_views.discussion, name="ds"),
+    path("add_dis/", q_views.add_dis, name="add_d"),
+    path("add_rep/", q_views.add_rep, name="add_r"),
+    path("my_dis/<int:id>", q_views.my_dis, name="my_dis"),
+    path("change_s/", q_views.change_s, name="change_s")
 ]

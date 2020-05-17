@@ -26,7 +26,7 @@ div{
     padding: 0 30px;
     margin: 0;
 }
-#content .inner{
+.inner{
     background: #fff;
     padding: 20px;
     margin: 40px 5%;
@@ -34,10 +34,45 @@ div{
 }
 
 .container {
-    margin-left: 5%;
-    margin-right: 5%;
+
 }
 
 p#ex-msg {
     margin-bottom: 0px !important;
+}
+
+.dline{
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    font-size: 14px;
+    color: #999;
+}
+.dline::before,.dline::after{
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    background: #ccc;
+    top: 50%;
+}
+.dline::before{
+    margin-left: -10px;
+    transform: translateX(-100%);
+}
+.dline::after{
+    margin-left: 10px;
+}
+.sign{
+    float:right;
+    text-align:center;
+    color: #999;
+    font-size: 14px;
+}
+
+i{
+    position: fixed;/*固定位置*/
+    z-index:99;/*设置优先级显示，保证不会被覆盖*/
+    right:10%; bottom:100px;
 }

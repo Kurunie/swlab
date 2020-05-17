@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% block title %}
+    T{{ q.id }}
+{% endblock %}
+{% block content %}
+    <h1>T{{ q.id }}</h1>
+    <div class="container">
+        <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#home">题目</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#menu1">讨论</a>
+        </li>
+        </ul>
+    </div>
+    <div class="tab-content">
+        <div id="home" class="container tab-pane fade"><br>
+            <div class="content">
+                <div class="inner">
+                    <h2>{{ q.title }}</h2>
+                    <div class="main">
+                    <div class="test_content_nr_main">
+                        <ul>
+                            <li class="option">
+                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                                    value="A"/>
+                                <label>A.
+                                    <p class="ue" style="display: inline;">{{ q.optionA }}</p>
+                                </label>
+                            </li>
+
+                            <li class="option">
+                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                                    value="B"/>
+                                <label>
+                                    B.<p class="ue" style="display: inline;">{{ q.optionB }}</p>
+                                </label>
+                            </li>
+
+                            <li class="option">
+                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                                    value="C"/>
+                                <label>
+                                    C.<p class="ue" style="display: inline;">{{ q.optionC }}</p>
+                                </label>
+                            </li>
+
+                            <li class="option">
+                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
+                                    value="D"/>
+                                <label>
+                                    D.<p class="ue" style="display: inline;">{{ q.optionD }}</p>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                        <div class="submit_bottom" id="s1"><button type="submit" class="btn btn-primary">Submit</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="inner" style="display:none">
+                    <p id="result"></p>
+                    <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary">查看答案</button></div>
+                    <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="menu1" class="container tab-pane active"><br>
+            <a href="javascript:history.go(-1)" ><div class="submit_bottom" id="s3" style="display:inline;"><button type="button" class="btn btn-primary">返回</button></div></a>
+            <div class="inner">
+                <h2>{{ d.title }}</h2>
+                <div class="dline">
+                    {% if d.solved %}
+                        已解决
+                    {% else %}
+                        未解决
+                    {% endif %}
+                </div>
+                <p>{{ d.detail }}</p>
+                <p class="sign">{{ d.uid.name }} {{ d.uid.type }}</p>
+            </div>
+            <div class="dline">回复</div>
+            {% for r in rlist %}
+                <div class="inner">
+                    <p>{{ r.content }}</p>
+                    <p class="sign">{{ r.uid.name }} {{ r.uid.type }}</p>
+                </div>
+            {% endfor %}
+
+            <a href="#" data-toggle="modal" data-target="#w2" data-toggle="tooltip" title="回复"><i class="icon-plus icon-3x" style="position:fixed"></i></a>
+            <a href="#" id="change" data-toggle="modal" data-target="#w3" data-toggle="tooltip" title="修改状态" style="display: none"><i class="icon-exchange icon-3x" style="bottom:50px"></i></a>
+
+              <!-- 模态框1 -->
+              <div class="modal fade" id="w2">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">发布回复</h4>
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+
+                    <!-- 模态框主体 -->
+                      <div class="modal-body">
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">回复</span>
+                          </div>
+                          <input type="text" class="form-control" placeholder="请输入内容" id="content" name="content">
+                        </div>
+
+
+                      </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="r_sub">Submit</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+                <!-- 模态框2 -->
+              <div class="modal fade" id="w3">
+                <div class="modal-dialog modal-sm">
+                  <div class="modal-content">
+
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">改变状态</h4>
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+
+                    <!-- 模态框主体 -->
+                      <div class="modal-body">
+
+                         <div class="radio">
+                          <label><input type="radio" name="optradio" value="0" checked>未解决</label>
+                        </div>
+                        <div class="radio">
+                          <label><input type="radio" name="optradio" value="1">已解决</label>
+                        </div>
+
+                      </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="c_sub">更改</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+     $(document).ready(function(e) {
+         $("#s1").click(function(e) {
+             var s = $('input:radio[name="{{ q.id }}"]:checked').val();
+             if(s == null) {
+                 $("#result").html("你还没有选择，请选择一个答案再提交");
+             }
+             else {
+                 if(s == "{{ q.answer }}")
+                     $("#result").html("回答正确！");
+                 else
+                     $("#result").html("回答错误！");
+             }
+             $(".inner").show().addClass("show");
+         });
+
+         $("#s2").click(function(e) {
+             $("#answer").show().addClass("show");
+         });
+
+     　});
+
+    $(document).ready(function(e) {
+        if("{{ is_auth }}"=="1")
+        {
+             $("#change").show().addClass("show");
+        }
+     　});
+
+    $(function(){
+        $('#r_sub').on('click', function(){
+            var name = $("#js-name").val()
+            var content = $("#js-content").val()
+
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url:"/add_rep/",
+                data:{'content': $("#content").val(), 'did': {{ d.id }}},
+                dateType:"json",
+                async: true,
+                beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+                success: function(data) {
+                    if(data.status == 'success'){
+                        alert("回复成功");
+                         window.location.reload();//刷新当前页面.
+                    }else if(data.status == 'fail'){
+{#                        $('#jsCompanyTips').html(data.msg)#}
+                        alert("未登录，请登录后重试");
+                    }
+                },
+            });
+        });
+    })
+
+    $(function(){
+        $('#c_sub').on('click', function(){
+            var name = $("#js-name").val()
+            var content = $("#js-content").val()
+            var rs = $('input:radio[name="optradio"]:checked').val();
+
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url:"/change_s/",
+                data:{'status': rs, 'did': {{ d.id }}},
+                dateType:"json",
+                async: true,
+                beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+                success: function(data) {
+                    if(data.status == 'success'){
+                        alert("更新成功");
+                         window.location.reload();//刷新当前页面.
+                    }else if(data.status == 'fail'){
+{#                        $('#jsCompanyTips').html(data.msg)#}
+                        alert("更新失败");
+                    }
+                },
+            });
+        });
+    })
+
+
+
+{% endblock %}
+

@@ -101,3 +101,26 @@ class TAnswer(models.Model):
         verbose_name = '试卷选项'
         verbose_name_plural = verbose_name
 
+class Discussion(models.Model):
+    id = models.AutoField(primary_key=True)
+    qid = models.ForeignKey(Question, on_delete=models.CASCADE,default='')
+    uid = models.ForeignKey(UserEx, on_delete=models.CASCADE)
+    title = models.TextField('概要',max_length=50)
+    detail = models.TextField('详细内容',max_length=500)
+    solved = models.BooleanField(default='False')
+
+    class Meta:
+        db_table = 'discussion'
+        verbose_name = '讨论'
+        verbose_name_plural = verbose_name
+
+class Reply(models.Model):
+    id = models.AutoField(primary_key=True)
+    did = models.ForeignKey(Discussion, on_delete=models.CASCADE)
+    uid = models.ForeignKey(UserEx, on_delete=models.CASCADE)
+    content = models.TextField(max_length=500)
+
+    class Meta:
+        db_table = 'reply'
+        verbose_name = '回复'
+        verbose_name_plural = verbose_name

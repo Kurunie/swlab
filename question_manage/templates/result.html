@@ -6,7 +6,7 @@
     {% if error_msg %}
         <p>{{ error_msg }}</p>
     {% endif %}
-    <div id="content">
+    <div class="content">
         {% for q in qlist %}
              <div class="inner">
                  <h2><a href="{% url 'q' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
