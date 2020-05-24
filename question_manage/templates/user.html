@@ -94,11 +94,40 @@
           </td>
       </tr>
     {% endfor %}
-
-
-
     </tbody>
+
   </table>
+    <h3>模拟考试</h3>
+    <table class="table">
+    <thead>
+      <tr>
+        <th>考试名称</th>
+          <th>生成时间</th>
+          <th>操作</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {#   遍历字典  paper #}
+    {% for ap in aplist %}
+
+     <tr class="table-info">
+          <td>{{ ap.title }}</td>
+          <td>{{ ap.generate_time }}</td>
+          <td>
+              <a href="{% url 'a_exam' user.id ap.id %}">
+              <button class="btn btn-primary" id="toExam+{{ ap.id }}">开始考试</button>
+             </a>
+              <a href="{% url 'del_ap' ap.id %}">
+              <button class="btn btn-primary" id="delExam+{{ ap.id }}">删除考试</button>
+             </a>
+          </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+
+    </table>
+    <button class="btn btn-primary" id="get_auto_exam" data-toggle="modal" data-target="#w1">生成新的模拟考试</button>
     </div>
 
     <div id="menu2" class="container tab-pane fade"><br>
@@ -130,10 +159,39 @@
              </a>
         </td>
       </tr>
+
     {% endfor %}
 
     </tbody>
   </table>
+
+    <h3>模拟考试答卷</h3>
+    <table class="table">
+        <thead>
+          <tr>
+            <th>标题</th>
+            <th>成绩</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for g in aglist %}
+            <tr class="table-primary">
+            <td>{{ g.pid.title }}</td>
+            <td>{{ g.grade }}</td>
+            <td>
+                  <a href="{% url 'a_answer' g.id  %}">
+                  <button class="btn btn-primary" id="answer+{{ g.id }}">查看答卷</button>
+                 </a>
+
+                <a href="{% url 'del_ag' g.id %}">
+                  <button class="btn btn-primary" id="delans+{{ g.id }}">删除答卷</button>
+                 </a>
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <a href="/user/export/" style="display: none" class="rewind_botton">
         <button class="btn btn-primary" id="export">导出成绩</button>
@@ -143,6 +201,68 @@
   </div>
 </div>
 
+
+ <!-- 模态框 -->
+<div class="modal fade" id="w1">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+
+    <!-- 模态框头部 -->
+    <div class="modal-header">
+      <h4 class="modal-title">生成新的模拟考试</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+
+
+    <!-- 模态框主体 -->
+      <form id="para_p">
+      <div class="modal-body">
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">标题</span>
+          </div>
+          <input type="text" class="form-control" placeholder="" id="title" name="title" required>
+        </div>
+
+        <div class="input-group mb-3" style="display:none;">
+          <div class="input-group-prepend">
+            <span class="input-group-text">总分</span>d
+          </div>
+          <input type="text" class="form-control" placeholder="" id="scores" name="scores" οnkeyup="this.value=this.value.replace(/\D/g,'')" required>
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">题目数量</span>
+          </div>
+          <input type="text" class="form-control" placeholder="" id="sum" name="sum" οnkeyup="this.value=this.value.replace(/\D/g,'')" required>
+        </div>
+
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">标签</span>
+        </div>
+        <select class="form-control" name = "sc" required>
+          {% for t in tlist %}
+            <option>{{ t.category }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="button" class="btn btn-primary" id="addform">添加新的标签</button>
+      </div>
+      </form>
+
+    <!-- 模态框底部 -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="d_sub">Submit</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+    </div>
+
+  </div>
+</div>
+</div>
 {% endblock %}
 
 {% block script %}
@@ -152,4 +272,55 @@
              $(".rewind_botton").show().addClass("show");
         }
      　});
+    var count = 1;
+    $("#addform").click(function(){
+        count = count + 1;
+        //添加的内容
+        $add = '<div class="input-group mb-3" id="tag'+count+'">'
+                      +'<div class="input-group-prepend">'
+                        +'<span class="input-group-text">标签</span>'
+                    +'</div>'
+                    +'<select class="form-control" name = "sc" required>'
+                      +'{% for t in tlist %}'
+                        +'<option>{{ t.category }}</option>'
+                      +'{% endfor %}'
+                    +'</select>'
+                    +'<button class="btn btn-primary" id="delform">删除</button>'
+                  +'</div>';
+        $("#addform").before($add);
+        //删除表单
+        $('button[id^="delform"]').click(function(){
+           if($(this).parent().remove()!=null){}
+              //count--;
+        });
+    });
+
+    $(function(){
+        $('#d_sub').on('click', function(){
+            var name = $("#js-name").val()
+            var content = $("#js-content").val()
+
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url:"/add_autop/",
+                data:$("#para_p").serializeArray(),
+                dateType:"json",
+                async: true,
+                beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+                success: function(data) {
+                    if(data.status == 'success'){
+                        alert("提交成功");
+                        window.location.href="/user/"
+                    }else if(data.status == 'fail'){
+{#                        $('#jsCompanyTips').html(data.msg)#}
+                        alert("提交失败");
+                    }
+                },
+            });
+        });
+    });
+
 {% endblock %}

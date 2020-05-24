@@ -6,6 +6,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
 from .models import *
 from django.contrib.auth.decorators import login_required
+from .function import *
 
 import xlwt
 from io import BytesIO
@@ -145,22 +146,35 @@ def userpage(request):
     taglist = Question.objects.values("category").distinct()
     user = UserEx.objects.get(user=request.user)
     plist = Paper.objects.all()
+    aplist = AutoPaper.objects.filter(sid=user)
+    aglist = AutoGrade.objects.filter(sid=user)
     if user.type == "老师":
         glist = Grade.objects.all()
     else:
         glist = Grade.objects.filter(sid=user)
-    return render(request,'user.html', {'tlist': taglist, 'user':user, 'plist':plist, 'glist':glist})
+    return render(request,'user.html', {'tlist': taglist, 'user':user, 'plist':plist, 'glist':glist, 'aplist':aplist, 'aglist':aglist})
 
 def exam(request, sid, pid):
     paper = Paper.objects.get(id=pid)
     student = UserEx.objects.get(id=sid)
     return render(request, 'exam.html', {'student': student, 'paper': paper})
 
+def a_exam(request, sid, pid):
+    paper = AutoPaper.objects.get(id=pid)
+    student = UserEx.objects.get(id=sid)
+    return render(request, 'a_exam.html', {'student': student, 'paper': paper})
+
 def lookAnswer(request, id):
     g = Grade.objects.get(id=id)
     s = g.sid
     alist = g.tanswer_set.all()
     return render(request, 'answer_base.html', {'student': s, 'alist':alist, 'grade':g})
+
+def a_lookAnswer(request, id):
+    g = AutoGrade.objects.get(id=id)
+    s = g.sid
+    alist = g.autotanswer_set.all()
+    return render(request, 'a_answer_base.html', {'student': s, 'alist':alist, 'grade':g})
 
 def sub_rewind(request):
     r = request.POST['rewind']
@@ -195,6 +209,54 @@ def calGrade(request):
 
     return userpage(request)
 
+def a_calGrade(request):
+    grade = 0
+    if request.method=='POST':
+        sid = request.POST['sid']
+        pid = request.POST['pid']
+        s = UserEx.objects.get(id=sid)
+        paper = AutoPaper.objects.get(id=pid)
+        g = AutoGrade.objects.create(sid=s, pid=paper, grade=grade)
+        qlist = paper.qid.all()
+        for q in qlist:
+            ans = request.POST[str(q.id)]
+            AutoTAnswer.objects.create(gid=g, qid=q, ans=ans)
+            if ans == q.answer:
+                grade += q.score
+        g.grade = grade
+        g.save()
+
+    return userpage(request)
+
+
+def add_auto_paper(request):
+    data = {}
+    data['status'] = 'fail'
+    if request.method == 'POST':
+        user = request.user
+        # print(user.username)
+        exu = UserEx.objects.get(user=user)
+        title = request.POST['title']
+        # scores = request.POST['scores']
+        scores = 0
+        sum = request.POST['sum']
+        sc = request.POST.getlist('sc')
+        qlist = get_auto_exam(sc, sum)
+        ap = AutoPaper.objects.create(title=title, scores=scores, sum=sum, sid=exu)
+        ap.qid.add(*qlist)
+        data['status'] = 'success'
+        data['message'] = '添加成功'
+    return JsonResponse(data)
+
+def del_apaper(request, id):
+    p = AutoPaper.objects.get(id=id)
+    p.delete()
+    return userpage(request)
+
+def del_agrade(request, id):
+    g = AutoGrade.objects.get(id=id)
+    g.delete()
+    return userpage(request)
 
 # 导出excel数据
 def export_excel(request):

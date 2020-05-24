@@ -124,3 +124,43 @@ class Reply(models.Model):
         db_table = 'reply'
         verbose_name = '回复'
         verbose_name_plural = verbose_name
+
+class AutoPaper(models.Model):
+    #题号qid 和题库为多对多的关系
+    id=models.AutoField(primary_key=True)
+    qid=models.ManyToManyField(Question)#多对多
+    sid=models.ForeignKey(UserEx,on_delete=models.CASCADE)#添加外键
+    tag=models.CharField('标签',max_length=20)
+    title = models.CharField('标题', max_length=20, default='')
+    generate_time=models.DateField(auto_now_add=True)
+    scores=models.IntegerField('总分')
+    sum=models.IntegerField('题数')
+
+    class Meta:
+        db_table='autopaper'
+        verbose_name='自动生成试卷'
+        verbose_name_plural=verbose_name
+
+class AutoGrade(models.Model):
+    id=models.AutoField(primary_key=True)
+    pid=models.ForeignKey(AutoPaper, on_delete=models.CASCADE)
+    sid = models.ForeignKey(UserEx, on_delete=models.CASCADE, default='')  # 添加外键
+    grade=models.IntegerField()
+
+    def __str__(self):
+        return '<%s:%s>'%(self.sid,self.grade);
+
+    class Meta:
+        db_table='autograde'
+        verbose_name='模拟成绩'
+        verbose_name_plural=verbose_name
+
+class AutoTAnswer(models.Model):
+    gid=models.ForeignKey(AutoGrade, on_delete=models.CASCADE)
+    qid=models.ForeignKey(Question, on_delete=models.CASCADE,default='')
+    ans=models.CharField('选项',max_length=5)
+
+    class Meta:
+        db_table = 'autoanswer'
+        verbose_name = '模拟试卷选项'
+        verbose_name_plural = verbose_name
