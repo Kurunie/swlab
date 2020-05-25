@@ -241,11 +241,21 @@ def add_auto_paper(request):
         scores = 0
         sum = request.POST['sum']
         sc = request.POST.getlist('sc')
-        qlist = get_auto_exam(sc, sum)
-        ap = AutoPaper.objects.create(title=title, scores=scores, sum=sum, sid=exu)
-        ap.qid.add(*qlist)
-        data['status'] = 'success'
-        data['message'] = '添加成功'
+        # print(sc, sum, title)
+        if sc == '' or sum == '' or title == '':
+            data['status'] = 'fail'
+            data['message'] = '有数据为空，请检查'
+        elif not sum.isdigit() or int(sum) <= 0:
+            data['status'] = 'fail'
+            data['message'] = '题目数量不正确，请检查'
+        else:
+            sc = list(set(sc))
+            # print (sc)
+            qlist = get_auto_exam(sc, sum)
+            ap = AutoPaper.objects.create(title=title, scores=scores, sum=sum, sid=exu)
+            ap.qid.add(*qlist)
+            data['status'] = 'success'
+            data['message'] = '添加成功'
     return JsonResponse(data)
 
 def del_apaper(request, id):

@@ -316,7 +316,7 @@
                         window.location.href="/user/"
                     }else if(data.status == 'fail'){
 {#                        $('#jsCompanyTips').html(data.msg)#}
-                        alert("提交失败");
+                        alert(data.message);
                     }
                 },
             });
