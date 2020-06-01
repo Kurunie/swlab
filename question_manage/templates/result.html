@@ -3,18 +3,64 @@
     搜索结果
 {% endblock %}
 {% block content %}
+<div class="container">
+    <ul class="nav nav-pills" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="pill" href="#single">单选题</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="pill" href="#fillin">填空题</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="pill" href="#shorta">简答题</a>
+    </li>
+  </ul>
     {% if error_msg %}
         <p>{{ error_msg }}</p>
     {% endif %}
-    <div class="content">
-        {% for q in qlist %}
-             <div class="inner">
-                 <h2><a href="{% url 'q' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
-             </div>
-            {% empty %}
-              <div class="no-post">
-                没有搜索到符合条件的题目
-              </div>
-        {% endfor %}
+    <div class="tab-content">
+        <div id="single" class="container tab-pane active">
+            {% for q in qlist %}
+                 <div class="inner">
+                     <h2><a href="{% url 'q' 's' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
+                    <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
+                 </div>
+                {% empty %}
+                  <div class="no-post">
+                    没有搜索到符合条件的题目
+                  </div>
+            {% endfor %}
+        </div>
+
+        <div id="fillin" class="container tab-pane fade">
+            {% for q in fqlist %}
+                {% if q.type == 'f' %}
+                 <div class="inner">
+                     <h2><a href="{% url 'q' 'f' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
+                    <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
+                 </div>
+                {% endif %}
+                {% empty %}
+                  <div class="no-post">
+                    没有搜索到符合条件的题目
+                  </div>
+            {% endfor %}
+        </div>
+
+        <div id="shorta" class="container tab-pane fade">
+            {% for q in fqlist %}
+                {% if q.type == 'sa' %}
+                 <div class="inner">
+                     <h2><a href="{% url 'q' 'sa' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
+                    <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
+                 </div>
+                {% endif %}
+                {% empty %}
+                  <div class="no-post">
+                    没有搜索到符合条件的题目
+                  </div>
+            {% endfor %}
+        </div>
     </div>
+</div>
 {% endblock %}

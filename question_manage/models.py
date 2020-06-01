@@ -50,6 +50,7 @@ class Question(models.Model):
     optionD = models.CharField('D选项', max_length=30)
     answer = models.CharField('答案', max_length=10, choices=ANSWER)
     score = models.IntegerField('分数', default=1)
+    solution = models.TextField('解析', default='无')
 
     class Meta:
         db_table = 'question'
@@ -59,10 +60,34 @@ class Question(models.Model):
     def __str__(self):
         return '<%s:%s>' % (self.category, self.title);
 
+class Fillin(models.Model):
+    TYPE = (
+        ('f', '填空题'),
+        ('sa', '简答题'),
+    )
+
+    id = models.AutoField(primary_key=True)
+    category = models.CharField('标签', max_length=20)
+    title = models.TextField('题目')
+    answer = models.TextField('答案', max_length=10)
+    score = models.IntegerField('分数', default=1)
+    type = models.CharField('类型', max_length=10, choices=TYPE, default='')
+    solution = models.TextField('解析', default='无')
+
+    class Meta:
+        db_table = 'fillin'
+        verbose_name = '填空或简答题库'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return '<%s:%s>' % (self.category, self.title);
+
+
 class Paper(models.Model):
     #题号qid 和题库为多对多的关系
     id=models.AutoField(primary_key=True)
-    qid=models.ManyToManyField(Question)#多对多
+    sqid=models.ManyToManyField(Question)#多对多
+    fqid=models.ManyToManyField(Fillin)
     tid=models.ForeignKey(UserEx,on_delete=models.CASCADE)#添加外键
     title=models.CharField('标题',max_length=20,default='')
     major=models.CharField('考卷适用专业',max_length=20)
@@ -81,6 +106,7 @@ class Grade(models.Model):
     sid=models.ForeignKey(UserEx,on_delete=models.CASCADE,default='')#添加外键
     pid=models.ForeignKey(Paper, on_delete=models.CASCADE)
     grade=models.IntegerField()
+    is_checked=models.BooleanField(default='False')
     rewind=models.TextField(default="")
 
     def __str__(self):
@@ -95,10 +121,24 @@ class TAnswer(models.Model):
     gid=models.ForeignKey(Grade, on_delete=models.CASCADE)
     qid=models.ForeignKey(Question, on_delete=models.CASCADE,default='')
     ans=models.CharField('选项',max_length=5)
+    score =models.IntegerField('得分', default=0)
+    rewind = models.TextField('点评',default='')
 
     class Meta:
         db_table = 'answer'
-        verbose_name = '试卷选项'
+        verbose_name = '答卷单选题'
+        verbose_name_plural = verbose_name
+
+class F_TAnswer(models.Model):
+    gid=models.ForeignKey(Grade, on_delete=models.CASCADE)
+    qid=models.ForeignKey(Fillin, on_delete=models.CASCADE,default='')
+    ans=models.TextField('选项')
+    score = models.IntegerField('得分', default=0)
+    rewind = models.TextField('点评', default='')
+
+    class Meta:
+        db_table = 'f_answer'
+        verbose_name = '答卷填空题'
         verbose_name_plural = verbose_name
 
 class Discussion(models.Model):
@@ -108,10 +148,26 @@ class Discussion(models.Model):
     title = models.TextField('概要',max_length=50)
     detail = models.TextField('详细内容',max_length=500)
     solved = models.BooleanField(default='False')
+    replied = models.BooleanField(default='False')
+
 
     class Meta:
         db_table = 'discussion'
-        verbose_name = '讨论'
+        verbose_name = '单选题讨论'
+        verbose_name_plural = verbose_name
+
+class F_Discussion(models.Model):
+    id = models.AutoField(primary_key=True)
+    qid = models.ForeignKey(Fillin, on_delete=models.CASCADE,default='')
+    uid = models.ForeignKey(UserEx, on_delete=models.CASCADE)
+    title = models.TextField('概要',max_length=50)
+    detail = models.TextField('详细内容',max_length=500)
+    solved = models.BooleanField(default='False')
+    replied = models.BooleanField(default='False')
+
+    class Meta:
+        db_table = 'f_discussion'
+        verbose_name = '填空/简答题讨论'
         verbose_name_plural = verbose_name
 
 class Reply(models.Model):
@@ -122,13 +178,25 @@ class Reply(models.Model):
 
     class Meta:
         db_table = 'reply'
-        verbose_name = '回复'
+        verbose_name = '单选题讨论回复'
+        verbose_name_plural = verbose_name
+
+class F_Reply(models.Model):
+    id = models.AutoField(primary_key=True)
+    did = models.ForeignKey(F_Discussion, on_delete=models.CASCADE)
+    uid = models.ForeignKey(UserEx, on_delete=models.CASCADE)
+    content = models.TextField(max_length=500)
+
+    class Meta:
+        db_table = 'f_reply'
+        verbose_name = '填空/简答题讨论回复'
         verbose_name_plural = verbose_name
 
 class AutoPaper(models.Model):
     #题号qid 和题库为多对多的关系
     id=models.AutoField(primary_key=True)
-    qid=models.ManyToManyField(Question)#多对多
+    sqid=models.ManyToManyField(Question)#多对多
+    fqid = models.ManyToManyField(Fillin)
     sid=models.ForeignKey(UserEx,on_delete=models.CASCADE)#添加外键
     tag=models.CharField('标签',max_length=20)
     title = models.CharField('标题', max_length=20, default='')
@@ -162,5 +230,15 @@ class AutoTAnswer(models.Model):
 
     class Meta:
         db_table = 'autoanswer'
-        verbose_name = '模拟试卷选项'
+        verbose_name = '模拟答卷单选题'
+        verbose_name_plural = verbose_name
+
+class F_AutoTAnswer(models.Model):
+    gid=models.ForeignKey(AutoGrade, on_delete=models.CASCADE)
+    qid=models.ForeignKey(Fillin, on_delete=models.CASCADE,default='')
+    ans=models.TextField('答案')
+
+    class Meta:
+        db_table = 'f_autoanswer'
+        verbose_name = '模拟答卷填空题'
         verbose_name_plural = verbose_name

@@ -37,7 +37,7 @@
 <nav class="navbar navbar-expand-sm bg-light navbar-light ">
     <ul class="navbar-nav">
         <li class="nav-item active">
-            <a class="nav-link"><h3>标题:{{ paper.title }}</h3></a>
+            <a class="nav-link"><h3>标题:{{ grade.pid.title }}</h3></a>
         </li>
         <li style="position: fixed;right: 70px; font-size: 30px;color: #9fcdff">{{ student.name }}</li>
 
@@ -66,7 +66,7 @@
                                {% for a in alist %}
                                    <li id="{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <i>{{ forloop.counter}}</i><span>({{ a.qid.score }}分)</span>
+                                        <span>{{ forloop.counter}}.</span><span>({{ a.qid.score }}分)</span>
                                         <font>{{ a.qid.title }}</font>
 
                                     </div>
@@ -101,14 +101,100 @@
 
                                     <li>
                                         <p>提交答案：{{ a.ans }} 正确答案:{{ a.qid.answer }}</p>
+                                        <p>答案解析：{{ a.qid.solution }}</p>
+                                        <div class="input-group mb-3 input-group">
+                                           <div class="input-group-prepend">
+                                            <span class="input-group-text">点评</span>
+                                          </div>
+                                          <input type="text" class="form-control" name="sr{{ a.id }}">
+                                        </div>
                                     </li>
                                {% endfor %}
 							</ul>
 						</div>
+
+                        <div class="test_content">
+							<div class="test_content_title">
+								<h2>填空题</h2>
+
+							</div>
+						</div>
+						<div class="test_content_nr">
+							<ul>
+                               {% for fa in falist %}
+                                   {% if fa.qid.type == 'f' %}
+                                   <li id="{{ forloop.counter }}">
+                                        <div class="test_content_nr_tt">
+                                            <span>{{ forloop.counter}}.</span><span>({{ fa.qid.score }}分)</span>
+                                            <font>{{ fa.qid.title }}</font>
+
+                                        </div>
+                                       <div class="test_content_nr_main">
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <p>提交答案：{{ fa.ans }} 正确答案:{{ fa.qid.answer }}</p>
+                                        <p>答案解析：{{ fa.qid.solution }}</p>
+                                        <div class="input-group mb-3 input-group">
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text">给分</span>
+                                          </div>
+                                          <input type="number" class="form-control" name="fs{{ fa.id }}">
+                                           <div class="input-group-prepend">
+                                            <span class="input-group-text">点评</span>
+                                          </div>
+                                          <input type="text" class="form-control" name="fr{{ fa.id }}">
+                                        </div>
+                                    </li>
+                                   {% endif %}
+                               {% endfor %}
+							</ul>
+						</div>
+
+                        <div class="test_content">
+							<div class="test_content_title">
+								<h2>简答题</h2>
+
+							</div>
+						</div>
+						<div class="test_content_nr">
+							<ul>
+                               {% for fa in falist %}
+                                   {% if fa.qid.type == 'sa' %}
+                                   <li id="{{ forloop.counter }}">
+                                        <div class="test_content_nr_tt">
+                                            <span>{{ forloop.counter}}.</span><span>({{ fa.qid.score }}分)</span>
+                                            <font>{{ fa.qid.title }}</font>
+
+                                        </div>
+                                       <div class="test_content_nr_main">
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <p>提交答案：{{ fa.ans }} 正确答案:{{ fa.qid.answer }}</p>
+                                        <p>答案解析：{{ fa.qid.solution }}</p>
+                                        <div class="input-group mb-3 input-group">
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text">给分</span>
+                                          </div>
+                                          <input type="number" class="form-control" name="sas{{ fa.id }}">
+                                           <div class="input-group-prepend">
+                                            <span class="input-group-text">点评</span>
+                                          </div>
+                                          <input type="text" class="form-control" name="sar{{ fa.id }}">
+                                        </div>
+                                    </li>
+                                   {% endif %}
+                               {% endfor %}
+							</ul>
+						</div>
+
                         <!-- 评语输入框 -->
                         <div class="input-group mb-3 input-group-lg">
                           <div class="input-group-prepend">
-                            <span class="input-group-text">评语</span>
+                            <span class="input-group-text">总评</span>
                           </div>
                           <input type="text" class="form-control" name="rewind">
                         </div>

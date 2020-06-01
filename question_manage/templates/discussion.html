@@ -15,6 +15,7 @@
         </ul>
     </div>
     <div class="tab-content">
+        {% if type == 's' %}
         <div id="home" class="container tab-pane fade"><br>
             <div class="content">
                 <div class="inner">
@@ -69,6 +70,25 @@
             </div>
 
         </div>
+        {% else %}
+        <div id="home" class="container tab-pane fade"><br>
+            <div class="content">
+                <div class="inner">
+                    <h2>{{ q.title }}</h2>
+                    <div class="main"></div>
+                    <div class="test_content_nr_main"></div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="inner">
+                    <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary">查看答案</button></div>
+                    <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p></div>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
 
         <div id="menu1" class="container tab-pane active"><br>
             <a href="javascript:history.go(-1)" ><div class="submit_bottom" id="s3" style="display:inline;"><button type="button" class="btn btn-primary">返回</button></div></a>
@@ -84,7 +104,16 @@
                 <p>{{ d.detail }}</p>
                 <p class="sign">{{ d.uid.name }} {{ d.uid.type }}</p>
             </div>
-            <div class="dline">回复</div>
+            <div class="dline">老师回复</div>
+            {% for r in rlist %}
+                {% if r.uid.type == '老师' %}
+                <div class="inner sticky">
+                    <p>{{ r.content }}</p>
+                    <p class="sign">{{ r.uid.name }} {{ r.uid.type }}</p>
+                </div>
+                {% endif %}
+            {% endfor %}
+            <div class="dline">所有回复</div>
             {% for r in rlist %}
                 <div class="inner">
                     <p>{{ r.content }}</p>
@@ -92,8 +121,8 @@
                 </div>
             {% endfor %}
 
-            <a href="#" data-toggle="modal" data-target="#w2" data-toggle="tooltip" title="回复"><i class="icon-plus icon-3x" style="position:fixed"></i></a>
-            <a href="#" id="change" data-toggle="modal" data-target="#w3" data-toggle="tooltip" title="修改状态" style="display: none"><i class="icon-exchange icon-3x" style="bottom:50px"></i></a>
+            <a href="#" data-toggle="modal" data-target="#w2" data-toggle="tooltip" title="回复"><i class="fa fa-plus fa-3x fa-pull-right fa-border" style="position:fixed"></i></a>
+            <a href="#" id="change" data-toggle="modal" data-target="#w3" data-toggle="tooltip" title="修改状态" style="display: none"><i class="fa fa-exchange fa-3x fa-pull-right fa-border" style="bottom:50px"></i></a>
 
               <!-- 模态框1 -->
               <div class="modal fade" id="w2">
@@ -208,7 +237,7 @@
                 cache: false,
                 type: "POST",
                 url:"/add_rep/",
-                data:{'content': $("#content").val(), 'did': {{ d.id }}},
+                data:{'content': $("#content").val(), 'did': {{ d.id }}, 'type': '{{ type }}'},
                 dateType:"json",
                 async: true,
                 beforeSend:function(xhr, settings){
@@ -237,7 +266,7 @@
                 cache: false,
                 type: "POST",
                 url:"/change_s/",
-                data:{'status': rs, 'did': {{ d.id }}},
+                data:{'status': rs, 'did': {{ d.id }}, 'type': '{{ type }}'},
                 dateType:"json",
                 async: true,
                 beforeSend:function(xhr, settings){

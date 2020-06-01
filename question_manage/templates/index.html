@@ -1,15 +1,53 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="content">
-        {% for q in qlist %}
-            <div class="inner">
-                <h2><a href="{% url 'q' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
-                <div class="main">
-                    <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
+<div class="container">
+    <ul class="nav nav-pills" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="pill" href="#single">单选题</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="pill" href="#fillin">填空题</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="pill" href="#shorta">简答题</a>
+    </li>
+  </ul>
+    <div class="tab-content">
+        <div id="single" class="container tab-pane active">
+            {% for q in sq %}
+                <div class="inner">
+                    <h2><a href="{% url 'q' 's' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
+                    <div class="main">
+                        <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+
+        <div id="fillin" class="container tab-pane fade"><br>
+            {% for q in fq %}
+                <div class="inner">
+                    <h2><a href="{% url 'q' 'f' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
+                    <div class="main">
+                        <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="shorta" class="container tab-pane fade"><br>
+            {% for q in saq %}
+                <div class="inner">
+                    <h2><a href="{% url 'q' 'sa' q.id %}">T{{ q.id }}. {{ q.title }}</a></h2>
+                    <div class="main">
+                        <p class="text-info" id="ex-msg">标签：{{ q.category }} ； 分值:{{ q.score }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
     </div>
+</div>
 {% endblock %}
 
 

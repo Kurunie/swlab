@@ -76,3 +76,7 @@ i{
     z-index:99;/*设置优先级显示，保证不会被覆盖*/
     right:10%; bottom:100px;
 }
+
+.sticky{
+    border:1px dashed #ff000e
+}

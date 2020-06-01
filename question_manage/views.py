@@ -7,6 +7,7 @@ from django.contrib import messages
 from .models import *
 from django.contrib.auth.decorators import login_required
 from .function import *
+from itertools import chain
 
 import xlwt
 from io import BytesIO
@@ -16,38 +17,61 @@ from io import BytesIO
 
 
 def index(request):
-    taglist = Question.objects.values("category").distinct()
-    ques = Question.objects.all()
-    return render_to_response("index.html", {'qlist': ques, 'tlist': taglist})
+    t1 = Question.objects.values("category").distinct()
+    t2 = Fillin.objects.values("category").distinct()
+    taglist = t1.union(t2)
+    sq = Question.objects.all()
+    fq = Fillin.objects.filter(type='f')
+    saq = Fillin.objects.filter(type='sa')
+    return render_to_response("index.html", {'sq': sq, 'fq': fq, 'saq': saq, 'tlist': taglist})
 
-def singleq(request, id):
-    taglist = Question.objects.values("category").distinct()
-    q = Question.objects.get(id=id)
-    s_dlist = Discussion.objects.filter(qid=q, solved=True)
-    un_dlist = Discussion.objects.filter(qid=q, solved=False)
-    return render_to_response("singleq.html", {'q': q, 'tlist': taglist, 's_dlist': s_dlist, 'un_dlist': un_dlist})
+def singleq(request, type, id):
+    t1 = Question.objects.values("category").distinct()
+    t2 = Fillin.objects.values("category").distinct()
+    taglist = t1.union(t2)
+    if type == 's':
+        q = Question.objects.get(id=id)
+        s_dlist = Discussion.objects.filter(qid=q, solved=True)
+        un_dlist = Discussion.objects.filter(qid=q, solved=False)
+        return render_to_response("singleq.html", {'q': q, 'tlist': taglist, 's_dlist': s_dlist, 'un_dlist': un_dlist, 'type':'s'})
+    else:
+        q = Fillin.objects.get(id=id)
+        s_dlist = F_Discussion.objects.filter(qid=q, solved=True)
+        un_dlist = F_Discussion.objects.filter(qid=q, solved=False)
+        return render_to_response("fillq.html", {'q': q, 'tlist': taglist, 's_dlist': s_dlist, 'un_dlist': un_dlist, 'type':'f'})
 
-def discussion(request, id, did):
-    taglist = Question.objects.values("category").distinct()
-    q = Question.objects.get(id=id)
-    d = Discussion.objects.get(id=did)
-    rlist = Reply.objects.filter(did=d)
+def discussion(request, type, id, did):
+    t1 = Question.objects.values("category").distinct()
+    t2 = Fillin.objects.values("category").distinct()
+    taglist = t1.union(t2)
+    if type == 's':
+        q = Question.objects.get(id=id)
+        d = Discussion.objects.get(id=did)
+        rlist = Reply.objects.filter(did=d)
+    else:
+        q = Fillin.objects.get(id=id)
+        d = F_Discussion.objects.get(id=did)
+        rlist = F_Reply.objects.filter(did=d)
     user = request.user
     is_auth = '0'
     if user.is_authenticated:
         if user.username == d.uid.user.username:
             is_auth = '1'
-    return render(request, "discussion.html", {'q': q, 'tlist': taglist, 'd': d, 'rlist': rlist, 'is_auth': is_auth})
+    return render(request, "discussion.html", {'q': q, 'tlist': taglist, 'd': d, 'rlist': rlist, 'is_auth': is_auth, 'type': type})
 
 def change_s(request):
     if request.is_ajax():
         status = request.POST.get('status')
+        type = request.POST.get('type')
         data = {}
         did = request.POST.get('did')
-        d = Discussion.objects.get(id=did)
         user = request.user
         # return HttpResponse(status)
         if user.is_authenticated:
+            if type == 's':
+                d = Discussion.objects.get(id=did)
+            else:
+                d = F_Discussion.objects.get(id=did)
             if status == '1':
                 d.solved = 1
             else:
@@ -58,27 +82,39 @@ def change_s(request):
         return JsonResponse(data)
 
 @login_required
-def my_dis(request, id):
-    taglist = Question.objects.values("category").distinct()
-    q = Question.objects.get(id=id)
+def my_dis(request, type, id):
+    t1 = Question.objects.values("category").distinct()
+    t2 = Fillin.objects.values("category").distinct()
+    taglist = t1.union(t2)
     user = request.user
     if user.is_authenticated:
         exu = UserEx.objects.get(user=user)
-        s_dlist = Discussion.objects.filter(qid=q, uid=exu, solved=True)
-        un_dlist = Discussion.objects.filter(qid=q, uid=exu, solved=False)
-        return render(request, "my_dis.html", {'q': q, 'tlist': taglist, 's_dlist': s_dlist, 'un_dlist': un_dlist, 'user':exu})
+        if type == 's':
+            q = Question.objects.get(id=id)
+            s_dlist = Discussion.objects.filter(qid=q, uid=exu, solved=True)
+            un_dlist = Discussion.objects.filter(qid=q, uid=exu, solved=False)
+        else:
+            q = Fillin.objects.get(id=id)
+            s_dlist = F_Discussion.objects.filter(qid=q, uid=exu, solved=True)
+            un_dlist = F_Discussion.objects.filter(qid=q, uid=exu, solved=False)
+        return render(request, "my_dis.html", {'q': q, 'tlist': taglist, 's_dlist': s_dlist, 'un_dlist': un_dlist, 'user':exu, 'type':type})
 
 def add_dis(request):
     if request.is_ajax():
         title = request.POST.get('title')
+        type = request.POST.get('type')
         detail = request.POST.get('detail')
         data = {}
         qid = request.POST.get('qid')
-        q = Question.objects.get(id=qid)
         user = request.user
         if user.is_authenticated:
             exu = UserEx.objects.get(user=user)
-            Discussion.objects.create(qid=q, uid=exu, title=title, detail=detail)
+            if type == 's':
+                q = Question.objects.get(id=qid)
+                Discussion.objects.create(qid=q, uid=exu, title=title, detail=detail)
+            else:
+                q = Fillin.objects.get(id=qid)
+                F_Discussion.objects.create(qid=q, uid=exu, title=title, detail=detail)
             data['status'] = 'success'
             data['message'] = '发布成功'
             data['data'] = {'title': title, 'detail': detail}
@@ -93,11 +129,19 @@ def add_rep(request):
         content = request.POST.get('content')
         data = {}
         did = request.POST.get('did')
-        d = Discussion.objects.get(id=did)
         user = request.user
         if user.is_authenticated:
             exu = UserEx.objects.get(user=user)
-            Reply.objects.create(did=d, uid=exu, content=content)
+            type = request.POST.get('type')
+            if type == 's':
+                d = Discussion.objects.get(id=did)
+                Reply.objects.create(did=d, uid=exu, content=content)
+            else:
+                d = F_Discussion.objects.get(id=did)
+                F_Reply.objects.create(did=d, uid=exu, content=content)
+            if exu.type == '老师':
+                d.replied = True
+                d.save()
             data['status'] = 'success'
             data['message'] = '回复成功'
             data['data'] = {'content': content}
@@ -108,22 +152,28 @@ def add_rep(request):
         return JsonResponse(data)
 
 def search(request):
-    taglist = Question.objects.values("category").distinct()
+    t1 = Question.objects.values("category").distinct()
+    t2 = Fillin.objects.values("category").distinct()
+    taglist = t1.union(t2)
     q = request.GET.get('ss')
     t = request.GET.get('sc')
     error_msg = ''
     if t == 'ALL':
         if not q:
             qlist = Question.objects.all()
+            fqlist = Fillin.objects.all()
         else:
             qlist = Question.objects.filter(title__icontains=q)
+            fqlist = Fillin.objects.filter(title__icontains=q)
     else:
         if not q:
             qlist = Question.objects.filter(category=t)
+            fqlist = Fillin.objects.filter(category=t)
         else:
             qlist = Question.objects.filter(title__icontains=q, category=t)
+            fqlist = Question.objects.filter(title__icontains=q, category=t)
     return render(request, 'result.html', {'error_msg': error_msg,
-                                                 'qlist': qlist, 'tlist': taglist})
+                                                 'qlist': qlist, 'tlist': taglist ,'fqlist': fqlist})
 
 def mylogin(request):
     username = request.POST['username']
@@ -143,7 +193,9 @@ def mylogout(request):
 
 @login_required
 def userpage(request):
-    taglist = Question.objects.values("category").distinct()
+    t1 = Question.objects.values("category").distinct()
+    t2 = Fillin.objects.values("category").distinct()
+    taglist = t1.union(t2)
     user = UserEx.objects.get(user=request.user)
     plist = Paper.objects.all()
     aplist = AutoPaper.objects.filter(sid=user)
@@ -168,19 +220,39 @@ def lookAnswer(request, id):
     g = Grade.objects.get(id=id)
     s = g.sid
     alist = g.tanswer_set.all()
-    return render(request, 'answer_base.html', {'student': s, 'alist':alist, 'grade':g})
+    falist = g.f_tanswer_set.all()
+    return render(request, 'answer_base.html', {'student': s, 'alist':alist, 'grade':g, 'falist':falist})
 
 def a_lookAnswer(request, id):
     g = AutoGrade.objects.get(id=id)
     s = g.sid
     alist = g.autotanswer_set.all()
-    return render(request, 'a_answer_base.html', {'student': s, 'alist':alist, 'grade':g})
+    falist = g.f_autotanswer_set.all()
+    return render(request, 'a_answer_base.html', {'student': s, 'alist':alist, 'grade':g, 'falist':falist})
 
 def sub_rewind(request):
     r = request.POST['rewind']
     gid = request.POST['gid']
     g = Grade.objects.get(id=gid)
     g.rewind = r
+    falist = F_TAnswer.objects.filter(gid=g)
+    alist = TAnswer.objects.filter(gid=g)
+    for a in alist:
+        r = request.POST['sr'+str(a.id)]
+        a.rewind = r
+        a.save()
+    for fa in falist:
+        if fa.qid.type == 'f':
+            r = request.POST.get('fr'+str(fa.id))
+            s = request.POST.get('fs'+str(fa.id))
+        else:
+            r = request.POST.get('sar' + str(fa.id))
+            s = request.POST.get('sas' + str(fa.id))
+        g.grade = g.grade + int(s)
+        fa.rewind = r
+        fa.score = s
+        fa.save()
+    g.is_checked = True
     g.save()
     return userpage(request)
 
@@ -188,7 +260,8 @@ def rewind(request, id):
     g = Grade.objects.get(id=id)
     s = g.sid
     alist = g.tanswer_set.all()
-    return render(request, 'rewind.html', {'student': s, 'alist': alist, 'grade':g})
+    falist = g.f_tanswer_set.all()
+    return render(request, 'rewind.html', {'student': s, 'alist': alist, 'grade':g, 'falist':falist})
 
 def calGrade(request):
     grade = 0
@@ -198,15 +271,24 @@ def calGrade(request):
         s = UserEx.objects.get(id=sid)
         paper = Paper.objects.get(id=pid)
         g = Grade.objects.create(sid=s, pid=paper, grade=grade)
-        qlist = paper.qid.all()
+        qlist = paper.sqid.all()
         for q in qlist:
-            ans = request.POST[str(q.id)]
-            TAnswer.objects.create(gid=g, qid=q, ans=ans)
+            ans = request.POST['s'+str(q.id)]
+            t = TAnswer.objects.create(gid=g, qid=q, ans=ans)
             if ans == q.answer:
                 grade += q.score
+                t.score = q.score
+                t.save()
         g.grade = grade
         g.save()
-
+        fql = paper.fqid.filter(type='f')
+        for fq in fql:
+            ans = request.POST['f'+str(fq.id)]
+            F_TAnswer.objects.create(gid=g, qid=fq, ans=ans)
+        saql = paper.fqid.filter(type='sa')
+        for saq in saql:
+            ans = request.POST['sa'+str(saq.id)]
+            F_TAnswer.objects.create(gid=g, qid=saq, ans=ans)
     return userpage(request)
 
 def a_calGrade(request):
@@ -217,15 +299,22 @@ def a_calGrade(request):
         s = UserEx.objects.get(id=sid)
         paper = AutoPaper.objects.get(id=pid)
         g = AutoGrade.objects.create(sid=s, pid=paper, grade=grade)
-        qlist = paper.qid.all()
+        qlist = paper.sqid.all()
         for q in qlist:
-            ans = request.POST[str(q.id)]
+            ans = request.POST['s'+str(q.id)]
             AutoTAnswer.objects.create(gid=g, qid=q, ans=ans)
             if ans == q.answer:
                 grade += q.score
         g.grade = grade
         g.save()
-
+        fql = paper.fqid.filter(type='f')
+        for fq in fql:
+            ans = request.POST['f' + str(fq.id)]
+            F_AutoTAnswer.objects.create(gid=g, qid=fq, ans=ans)
+        saql = paper.fqid.filter(type='sa')
+        for saq in saql:
+            ans = request.POST['sa' + str(saq.id)]
+            F_AutoTAnswer.objects.create(gid=g, qid=saq, ans=ans)
     return userpage(request)
 
 
@@ -251,11 +340,16 @@ def add_auto_paper(request):
         else:
             sc = list(set(sc))
             # print (sc)
-            qlist = get_auto_exam(sc, sum)
-            ap = AutoPaper.objects.create(title=title, scores=scores, sum=sum, sid=exu)
-            ap.qid.add(*qlist)
-            data['status'] = 'success'
-            data['message'] = '添加成功'
+            flag, qlist, fqlist = get_auto_exam(sc, int(sum))
+            if not flag:
+                data['status'] = 'fail'
+                data['message'] = '题库题目数量不足'
+            else:
+                ap = AutoPaper.objects.create(title=title, scores=scores, sum=sum, sid=exu)
+                ap.sqid.add(*qlist)
+                ap.fqid.add(*fqlist)
+                data['status'] = 'success'
+                data['message'] = '添加成功'
     return JsonResponse(data)
 
 def del_apaper(request, id):

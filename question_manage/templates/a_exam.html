@@ -70,8 +70,8 @@
 						</div>
 						<div class="test_content_nr">
 							<ul>
-                               {% for test in paper.qid.all %}
-                                   <li id="{{ forloop.counter }}">
+                               {% for test in paper.sqid.all %}
+                                   <li id="ls{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
                                         <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
                                         <font>{{ test.title }}</font>
@@ -80,7 +80,7 @@
                                    <div class="test_content_nr_main">
                                         <ul>
                                                 <li class="option">
-                                                        <input type="radio" class="radioOrCheck" name="{{ test.id }}"
+                                                        <input type="radio" class="radioOrCheck" name="s{{ test.id }}"
                                                         value="A"/>
                                                     <label>A.
                                                         <p class="ue" style="display: inline;">{{ test.optionA }}</p>
@@ -88,7 +88,7 @@
                                                 </li>
 
                                                 <li class="option">
-                                                        <input type="radio" class="radioOrCheck" name="{{ test.id }}"
+                                                        <input type="radio" class="radioOrCheck" name="s{{ test.id }}"
                                                         value="B"/>
                                                     <label>
                                                         B.<p class="ue" style="display: inline;">{{ test.optionB }}</p>
@@ -96,7 +96,7 @@
                                                 </li>
 
                                                 <li class="option">
-                                                        <input type="radio" class="radioOrCheck" name="{{ test.id }}"
+                                                        <input type="radio" class="radioOrCheck" name="s{{ test.id }}"
                                                         value="C"/>
                                                     <label>
                                                         C.<p class="ue" style="display: inline;">{{ test.optionC }}</p>
@@ -104,7 +104,7 @@
                                                 </li>
 
                                                 <li class="option">
-                                                        <input type="radio" class="radioOrCheck" name="{{ test.id }}"
+                                                        <input type="radio" class="radioOrCheck" name="s{{ test.id }}"
                                                         value="D"/>
                                                     <label>
                                                         D.<p class="ue" style="display: inline;">{{ test.optionD }}</p>
@@ -113,6 +113,58 @@
                                         </ul>
                                     </div>
                                     </li>
+                               {% endfor %}
+							</ul>
+						</div>
+
+                        <div class="test_content">
+							<div class="test_content_title">
+								<h2>填空题</h2>
+							</div>
+						</div>
+						<div class="test_content_nr">
+							<ul>
+                               {% for test in paper.fqid.all %}
+                                   {% if test.type == 'f' %}
+                                   <li id="lf{{ forloop.counter }}">
+                                    <div class="test_content_nr_tt">
+                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <font>{{ test.title }}</font>
+
+                                    </div>
+                                   <div class="test_content_nr_main">
+                                        <ul>
+                                            <input type="text" name='f{{ test.id }}' class="form-control" placeholder="请在此输入答案...">
+                                        </ul>
+                                    </div>
+                                    </li>
+                                   {% endif %}
+                               {% endfor %}
+							</ul>
+						</div>
+
+                        <div class="test_content">
+							<div class="test_content_title">
+								<h2>简答题</h2>
+							</div>
+						</div>
+						<div class="test_content_nr">
+							<ul>
+                               {% for test in paper.fqid.all %}
+                                   {% if test.type == 'sa' %}
+                                   <li id="sa{{ forloop.counter }}">
+                                    <div class="test_content_nr_tt">
+                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <font>{{ test.title }}</font>
+
+                                    </div>
+                                   <div class="test_content_nr_main">
+                                        <ul>
+                                            <input type="text" name='sa{{ test.id }}' class="form-control" placeholder="请在此输入答案...">
+                                        </ul>
+                                    </div>
+                                    </li>
+                                   {% endif %}
                                {% endfor %}
 							</ul>
 						</div>

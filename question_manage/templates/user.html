@@ -4,7 +4,6 @@
 {% block content %}
 <div class="container">
 
-  <br>
   <!-- Nav pills -->
   <ul class="nav nav-pills" role="tablist">
     <li class="nav-item">
@@ -157,6 +156,9 @@
             <a href="{% url 'rewind' g.id  %}" style="display: none" class="rewind_botton">
               <button class="btn btn-primary" id="rewind+{{ g.id }}">审阅答卷</button>
              </a>
+            {% if g.is_checked %}
+                <span>(已审阅)</span>
+            {% endif %}
         </td>
       </tr>
 
@@ -170,7 +172,7 @@
         <thead>
           <tr>
             <th>标题</th>
-            <th>成绩</th>
+            <th>成绩（仅选择题）</th>
             <th>操作</th>
           </tr>
         </thead>

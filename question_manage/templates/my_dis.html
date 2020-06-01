@@ -15,6 +15,7 @@
         </ul>
     </div>
     <div class="tab-content">
+        {% if type == 's' %}
         <div id="home" class="container tab-pane fade"><br>
             <div class="content">
                 <div class="inner">
@@ -69,10 +70,29 @@
             </div>
 
         </div>
+        {% else %}
+        <div id="home" class="container tab-pane fade"><br>
+            <div class="content">
+                <div class="inner">
+                    <h2>{{ q.title }}</h2>
+                    <div class="main"></div>
+                    <div class="test_content_nr_main"></div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="inner">
+                    <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary">查看答案</button></div>
+                    <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p></div>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
 
         <div id="menu1" class="container tab-pane active"><br>
             <h2>{{ user.name }}发布的讨论</h2>
-            <a href="{% url 'q' q.id %}#menu1" ><div class="submit_bottom" id="s3" style="display:inline;"><button type="button" class="btn btn-primary">返回</button></div></a>
+            <a href="{% url 'q' type q.id %}#menu1" ><div class="submit_bottom" id="s3" style="display:inline;"><button type="button" class="btn btn-primary">返回</button></div></a>
 
             <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -87,7 +107,7 @@
                     <div class="content">
                         {% for sd in s_dlist %}
                             <div class="inner">
-                                <h2><a href="{% url 'ds' q.id sd.id %}">{{ sd.title }}</a></h2>
+                                <h2><a href="{% url 'ds' type q.id sd.id %}">{{ sd.title }}</a></h2>
                             </div>
                         {% endfor %}
                     </div>
@@ -97,7 +117,7 @@
                     <div class="content">
                         {% for und in un_dlist %}
                             <div class="inner">
-                                <h2><a href="{% url 'ds' q.id und.id %}">{{ und.title }}</a></h2>
+                                <h2><a href="{% url 'ds' type q.id und.id %}">{{ und.title }}</a></h2>
                             </div>
                         {% endfor %}
                     </div>

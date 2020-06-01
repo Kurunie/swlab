@@ -7,10 +7,10 @@
     <div class="container">
         <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" data-toggle="tab" href="#home">题目</a>
+          <a class="nav-link" data-toggle="tab" href="#home">题目</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-toggle="tab" href="#menu1">讨论</a>
+          <a class="nav-link active" data-toggle="tab" href="#menu1">讨论</a>
         </li>
         </ul>
     </div>
@@ -19,50 +19,13 @@
             <div class="content">
                 <div class="inner">
                     <h2>{{ q.title }}</h2>
-                    <div class="main">
-                    <div class="test_content_nr_main">
-                        <ul>
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="A"/>
-                                <label>A.
-                                    <p class="ue" style="display: inline;">{{ q.optionA }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="B"/>
-                                <label>
-                                    B.<p class="ue" style="display: inline;">{{ q.optionB }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="C"/>
-                                <label>
-                                    C.<p class="ue" style="display: inline;">{{ q.optionC }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="D"/>
-                                <label>
-                                    D.<p class="ue" style="display: inline;">{{ q.optionD }}</p>
-                                </label>
-                            </li>
-                        </ul>
-                    </div>
-                        <div class="submit_bottom" id="s1"><button type="submit" class="btn btn-primary">Submit</button></div>
-                    </div>
+                    <div class="main"></div>
+                    <div class="test_content_nr_main"></div>
                 </div>
             </div>
 
             <div class="content">
-                <div class="inner" style="display:none">
-                    <p id="result"></p>
+                <div class="inner">
                     <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary">查看答案</button></div>
                     <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p></div>
                 </div>
@@ -70,9 +33,9 @@
 
         </div>
 
-        <div id="menu1" class="container tab-pane fade"><br>
-            <a href="#" ><div class="submit_bottom" id="s2" style="display:inline;"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#w1" >发布讨论</button></div></a>
-            <a href="{% url 'my_dis' type q.id %}" ><div class="submit_bottom" id="s3" style="display:inline;"><button type="button" class="btn btn-primary" >查看我发布的讨论</button></div></a>
+        <div id="menu1" class="container tab-pane active"><br>
+            <h2>{{ user.name }}发布的讨论</h2>
+            <a href="{% url 'q' type q.id %}#menu1" ><div class="submit_bottom" id="s3" style="display:inline;"><button type="button" class="btn btn-primary">返回</button></div></a>
 
             <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -88,9 +51,6 @@
                         {% for sd in s_dlist %}
                             <div class="inner">
                                 <h2><a href="{% url 'ds' type q.id sd.id %}">{{ sd.title }}</a></h2>
-                                {% if sd.replied %}
-                                    <p class="text-info">老师已回复</p>
-                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -101,9 +61,6 @@
                         {% for und in un_dlist %}
                             <div class="inner">
                                 <h2><a href="{% url 'ds' type q.id und.id %}">{{ und.title }}</a></h2>
-                                {% if und.replied %}
-                                    <span class="text-info">老师已回复</span>
-                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -143,7 +100,7 @@
 
                 <!-- 模态框底部 -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="d_sub">Submit</button>
+                    <button type="submit" class="btn btn-primary" id="d_sub">Submit</button>
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
 
@@ -175,6 +132,10 @@
          $("#s2").click(function(e) {
              $("#answer").show().addClass("show");
          });
+         if('{{ type }}'=='f')
+         {
+             $("#home").load("/static/fin_my_dis.txt");
+         }
      　});
 
 
@@ -187,7 +148,7 @@
                 cache: false,
                 type: "POST",
                 url:"/add_dis/",
-                data:{'title': $("#title").val(), 'detail': $("#detail").val(), 'qid': {{ q.id }}, 'type': '{{ type }}'},
+                data:{'title': $("#title").val(), 'detail': $("#detail").val(), 'qid': {{ q.id }}},
                 dateType:"json",
                 async: true,
                 beforeSend:function(xhr, settings){
@@ -207,5 +168,5 @@
     })
 
 
-{% endblock %}
 
+{% endblock %}

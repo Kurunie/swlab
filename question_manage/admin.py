@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, UserEx, Paper, Grade, Discussion, Reply
+from .models import *
 # Register your models here.
 # 修改名称
 admin.site.site_header='在线考试系统后台'
@@ -31,3 +31,7 @@ class GradeAdmin(admin.ModelAdmin):
 @admin.register(Reply)
 class GradeAdmin(admin.ModelAdmin):
     list_display = ('did', 'uid', 'content')
+
+@admin.register(Fillin)
+class GradeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'category', 'title')

@@ -19,50 +19,13 @@
             <div class="content">
                 <div class="inner">
                     <h2>{{ q.title }}</h2>
-                    <div class="main">
-                    <div class="test_content_nr_main">
-                        <ul>
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="A"/>
-                                <label>A.
-                                    <p class="ue" style="display: inline;">{{ q.optionA }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="B"/>
-                                <label>
-                                    B.<p class="ue" style="display: inline;">{{ q.optionB }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="C"/>
-                                <label>
-                                    C.<p class="ue" style="display: inline;">{{ q.optionC }}</p>
-                                </label>
-                            </li>
-
-                            <li class="option">
-                                    <input type="radio" class="radioOrCheck" name="{{ q.id }}"
-                                    value="D"/>
-                                <label>
-                                    D.<p class="ue" style="display: inline;">{{ q.optionD }}</p>
-                                </label>
-                            </li>
-                        </ul>
-                    </div>
-                        <div class="submit_bottom" id="s1"><button type="submit" class="btn btn-primary">Submit</button></div>
-                    </div>
+                    <div class="main"></div>
+                    <div class="test_content_nr_main"></div>
                 </div>
             </div>
 
             <div class="content">
-                <div class="inner" style="display:none">
-                    <p id="result"></p>
+                <div class="inner">
                     <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary">查看答案</button></div>
                     <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p></div>
                 </div>
@@ -88,9 +51,6 @@
                         {% for sd in s_dlist %}
                             <div class="inner">
                                 <h2><a href="{% url 'ds' type q.id sd.id %}">{{ sd.title }}</a></h2>
-                                {% if sd.replied %}
-                                    <p class="text-info">老师已回复</p>
-                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -101,9 +61,6 @@
                         {% for und in un_dlist %}
                             <div class="inner">
                                 <h2><a href="{% url 'ds' type q.id und.id %}">{{ und.title }}</a></h2>
-                                {% if und.replied %}
-                                    <span class="text-info">老师已回复</span>
-                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -158,20 +115,6 @@
 
 {% block script %}
      $(document).ready(function(e) {
-         $("#s1").click(function(e) {
-             var s = $('input:radio[name="{{ q.id }}"]:checked').val();
-             if(s == null) {
-                 $("#result").html("你还没有选择，请选择一个答案再提交");
-             }
-             else {
-                 if(s == "{{ q.answer }}")
-                     $("#result").html("回答正确！");
-                 else
-                     $("#result").html("回答错误！");
-             }
-             $(".inner").show().addClass("show");
-         });
-
          $("#s2").click(function(e) {
              $("#answer").show().addClass("show");
          });
@@ -205,7 +148,6 @@
             });
         });
     })
-
 
 {% endblock %}
 
