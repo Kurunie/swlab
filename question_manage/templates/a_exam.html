@@ -58,7 +58,7 @@
                 <input type="hidden" name="pid" value="{{ paper.id }}">
 					<div class="test_title">
                         <p class="test_time">
-							<i class="icon iconfont">离考试结束还有：</i><b class="alt-1">01:40</b>
+							<b class="alt-1">01:40</b>
 						</p>
 						<font><input type="submit" name="tijiao" value="提交"></font>
 					</div>
@@ -73,7 +73,7 @@
                                {% for test in paper.sqid.all %}
                                    <li id="ls{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <span>({{ test.score }}分)</span>
                                         <font>{{ test.title }}</font>
 
                                     </div>
@@ -128,7 +128,7 @@
                                    {% if test.type == 'f' %}
                                    <li id="lf{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <span>({{ test.score }}分)</span>
                                         <font>{{ test.title }}</font>
 
                                     </div>
@@ -154,7 +154,7 @@
                                    {% if test.type == 'sa' %}
                                    <li id="sa{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <span>({{ test.score }}分)</span>
                                         <font>{{ test.title }}</font>
 
                                     </div>

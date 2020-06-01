@@ -68,7 +68,7 @@
                                {% for a in alist %}
                                    <li id="{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <span>{{ forloop.counter}}.</span><span>({{ a.qid.score }}分)</span>
+                                        <span>({{ a.qid.score }}分)</span>
                                         <font>{{ a.qid.title }}</font>
 
                                     </div>
@@ -120,7 +120,7 @@
                                    {% if a.qid.type == 'f' %}
                                    <li id="lf{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <span>{{ forloop.counter}}.</span><span>({{ a.qid.score }}分)</span>
+                                        <span>({{ a.qid.score }}分)</span>
                                         <font>{{ a.qid.title }}</font>
 
                                     </div>
@@ -149,7 +149,7 @@
                                    {% if a.qid.type == 'sa' %}
                                    <li id="sa{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <span>{{ forloop.counter}}.</span><span>({{ a.qid.score }}分)</span>
+                                        <span>({{ a.qid.score }}分)</span>
                                         <font>{{ a.qid.title }}</font>
 
                                     </div>

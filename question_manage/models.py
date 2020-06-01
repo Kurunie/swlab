@@ -69,7 +69,7 @@ class Fillin(models.Model):
     id = models.AutoField(primary_key=True)
     category = models.CharField('标签', max_length=20)
     title = models.TextField('题目')
-    answer = models.TextField('答案', max_length=10)
+    answer = models.TextField('答案')
     score = models.IntegerField('分数', default=1)
     type = models.CharField('类型', max_length=10, choices=TYPE, default='')
     solution = models.TextField('解析', default='无')

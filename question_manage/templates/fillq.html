@@ -27,7 +27,9 @@
             <div class="content">
                 <div class="inner">
                     <div class="submit_bottom" id="s2"><button type="submit" class="btn btn-primary">查看答案</button></div>
-                    <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p></div>
+                    <br/> <div id="answer" style="display:none"><p>正确答案：{{ q.answer }}</p>
+                    <p>答案解析：{{ q.solution }}</p>
+                    </div>
                 </div>
             </div>
 
@@ -51,6 +53,9 @@
                         {% for sd in s_dlist %}
                             <div class="inner">
                                 <h2><a href="{% url 'ds' type q.id sd.id %}">{{ sd.title }}</a></h2>
+                                {% if sd.replied %}
+                                    <p class="text-info">老师已回复</p>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -61,6 +66,9 @@
                         {% for und in un_dlist %}
                             <div class="inner">
                                 <h2><a href="{% url 'ds' type q.id und.id %}">{{ und.title }}</a></h2>
+                                {% if sd.replied %}
+                                    <p class="text-info">老师已回复</p>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>

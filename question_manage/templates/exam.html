@@ -73,7 +73,7 @@
                                {% for test in paper.sqid.all %}
                                    <li id="ls{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <span>({{ test.score }}分)</span>
                                         <font>{{ test.title }}</font>
 
                                     </div>
@@ -128,7 +128,7 @@
                                    {% if test.type == 'f' %}
                                    <li id="lf{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <span>({{ test.score }}分)</span>
                                         <font>{{ test.title }}</font>
 
                                     </div>
@@ -154,7 +154,7 @@
                                    {% if test.type == 'sa' %}
                                    <li id="sa{{ forloop.counter }}">
                                     <div class="test_content_nr_tt">
-                                        <i>{{ forloop.counter}}</i><span>({{ test.score }}分)</span>
+                                        <span>({{ test.score }}分)</span>
                                         <font>{{ test.title }}</font>
 
                                     </div>
